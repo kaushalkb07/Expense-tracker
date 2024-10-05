@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Search Results{% endblock title %}
+{% block body %}
+{% include 'layout/navbar.html' %}
+<main role="main">
+    <div class="starter-template container-fluid mt-3">
+        <h4>Search Results:</h4>
+    </div>
+
+    {% if allExpense.count == 0 %}
+    <div class="starter-template container-fluid">
+        <h5>No Search Results Found</h5>
+        Your search - "{{ query }}" - did not match any documents.<br>
+        Suggestions:<br>
+        Make sure that all words are spelled correctly.
+        <ul>
+            <li>Try different keywords.</li>
+            <li>Try more general keywords.</li>
+            <li>Try fewer keywords.</li>
+        </ul>
+    </div>
+    {% else %}
+    {% for expense in allExpense %}
+    <div class="container-fluid">
+        <div class="jumbotron p-4 p-md-5 text-black rounded bg-light">
+            <div class="col-md-6 px-0">
+                <h3 class="display-5 font-italic">{{ expense.title }}</h3>
+                <p class="lead my-2">Expense Amount: <u>RS {{ expense.amount }}</u></p>
+                <p class="lead my-2">{{ expense.description|truncatechars:25 }}...</p>
+                <p class="lead my-2">Expense by {{ expense.user }}</p>
+                <p class="lead my-2">Expense Date: {{ expense.date }}</p>
+                <p class="lead mb-0"><a href="{% url 'view_expense' expense.slug %}"
+                        class="text-black font-weight-bold">Continue reading...</a></p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</main>
+{% endblock body %}

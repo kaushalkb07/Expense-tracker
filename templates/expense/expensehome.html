@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title%}Expense{% endblock title%}
+{% block body %}
+<!--Navbar-->
+{% include 'layout/navbar.html' %}
+<!--ExpenseList-->
+<main role="main">
+  <div class="overflow-hidden text-center text-white bg-dark">
+    <div class="col-md-5 p-lg-5 mx-auto my-1">
+      <h4 class="display-5 font-italic">Your Expenses</h4>
+      <p class="">All your expense are listed below. Also you can add new expense</p>
+      <a href="{% url 'export_expenses_csv' %}" class="btn btn-outline-light mb-3">Export to CSV</a>
+      <a href="{% url 'export_expenses_excel' %}" class="btn btn-outline-light mb-3">Export to Excel</a>
+    </div>
+    <div class="product-device shadow-sm d-none d-md-block"></div>
+    <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+  </div><br>
+  <div class="container-fluid">
+
+    <!-- Display the expenses for the current page -->
+    {% for expense in page_expenses %}
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ expense.title }}</h5>
+            <p class="card-text">Amount: {{ expense.amount }}</p>
+            <p class="card-text">Date: {{ expense.date }}</p>
+            <p class="card-text">Description: {{ expense.description|truncatechars:50 }}</p>
+            <a href="/expense/{{ expense.slug }}" class="btn btn-outline-dark">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-4">
+            {% if page_expenses.has_previous %}
+            <li class="page-item">
+                <a class="page-link btn btn-outline-dark" href="?page={{ page_expenses.previous_page_number }}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link btn btn-outline-dark">Previous</a>
+            </li>
+            {% endif %}
+
+            <!-- Display current page number and total pages -->
+            <li class="page-item active">
+                <a class="page-link btn btn-outline-dark">{{ page_expenses.number }} of {{ page_expenses.paginator.num_pages }}</a>
+            </li>
+
+            {% if page_expenses.has_next %}
+            <li class="page-item">
+                <a class="page-link btn btn-outline-dark" href="?page={{ page_expenses.next_page_number }}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link btn btn-outline-dark">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+</main>
+{% endblock body %}

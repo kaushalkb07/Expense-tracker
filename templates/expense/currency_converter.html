@@ -1,0 +1,27 @@
+<!-- currency_converter.html -->
+{% extends 'base.html' %}
+{% block title %}Currency Converter{% endblock %}
+{% block body %}
+{% include 'layout/navbar.html' %}
+<h2 class="container mt-3">Currency Converter</h2>
+<form method="POST" class="container">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="from_currency">From Currency (e.g., EUR, GBP):</label>
+        <input type="text" name="from_currency" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label for="to_currency">To Currency (e.g., USD, JPY):</label>
+        <input type="text" name="to_currency" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label for="amount">Amount:</label>
+        <input type="number" step="0.01" name="amount" class="form-control" required>
+    </div>
+    <button class="btn btn-outline-secondary" type="submit">Convert</button>
+</form>
+
+{% if converted_amount %}
+    <h3 class="container mt-3">Converted Amount: {{ converted_amount }}</h3>
+{% endif %}
+{% endblock body %}

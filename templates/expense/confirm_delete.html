@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title%}Delete expense{% endblock title%}
+{% block body %}
+<h1 class="container mt-3">Are you sure you want to delete the expense "{{ expense.title }}"?</h1>
+<form method="POST" class="container mt-3">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Yes, delete</button>
+    <a class="btn btn-outline-dark" href="/expense_home">Cancel</a>
+</form>
+{% endblock body %}

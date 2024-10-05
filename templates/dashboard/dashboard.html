@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block body %}
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Expense Tracker</a>
+
+    <ul class="navbar-nav">
+        <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'search_expense' %}">
+            <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search expenses..."
+                value="{{ query }}" id="query">
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </ul>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link text-black" href="">
+
+                            Welcome, {{request.user}}
+                        </a></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/expense_home">
+                            Expenses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/exchange_rates">
+                            Exchange rates
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/currency_converter">
+                            Currency Converter
+                        </a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link text-dark" href="/signout">
+                            Logout
+                        </a>
+                    </li>                   
+                </ul>
+            </div>
+        </nav>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h2 class="h2">Dashboard </h2><br>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <a href="{% url 'export_expenses_csv' %}" class="btn btn-sm btn-outline-secondary">Export as CSV</a>
+                        <a href="{% url 'export_expenses_excel' %}" class="btn btn-sm btn-outline-secondary">Export as Excel</a>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <h2>Expense Analysis</h2>
+                <canvas id="expenseChart" style="display: block; width: 1060px; height: 392px;"></canvas> <!-- Chart.js canvas -->
+            </div>
+            <div class="table-responsive mt-5">
+                <h3>Expenses by Category</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for expense in expenses_by_category %}
+                        <tr>
+                            <td>{{ expense.category }}</td>
+                            <td>{{ expense.total_amount }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2">No expenses recorded.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Display expenses by month -->
+                <h3>Expenses by Month</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for expense in expenses_by_month %}
+                        <tr>
+                            <td>{{ expense.month|date:"F Y" }}</td>
+                            <td>{{ expense.total_amount }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2">No expenses recorded.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
+<script>
+    var ctx = document.getElementById('expenseChart').getContext('2d');
+
+    // Get data from Django context
+    var dates = JSON.parse('{{ dates|escapejs }}');  // Use escapejs to avoid issues with quotes
+    var amounts = JSON.parse('{{ amounts|escapejs }}');
+
+    // Create the chart
+    var expenseChart = new Chart(ctx, {
+        type: 'line',  // You can also use 'bar', 'pie', etc.
+        data: {
+            labels: dates,  // X-axis labels (dates)
+            datasets: [{
+                label: 'Expenses Over Time (Last 12 Months)',
+                data: amounts,  // Y-axis data (amounts)
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Line color
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true  // Ensure Y-axis starts at 0
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock body%}

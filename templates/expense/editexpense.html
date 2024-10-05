@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title%}Edit Expense{% endblock title%}
+{% block body %}
+{% include 'layout/navbar.html' %}
+<h2 class="container mt-3">Edit Expense: {{ expense.title }}</h2>
+
+<form method="POST" class="container">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- Display the form with pre-filled values -->
+    <button class="btn  btn-secondary" type="submit">Save Changes</button>
+</form>
+{% endblock body %}

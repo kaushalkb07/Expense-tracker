@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title%}Expense{% endblock title%}
+{% block body %}
+{% include 'layout/navbar.html' %}
+<div class="overflow-hidden text-center text-white bg-dark">
+    <div class="col-md-5 p-lg-5 mx-auto my-1">
+        <h2 class="display-5 font-weight-normal">{{expense.title}}</h2>
+        <p class="lead ">Expense of {{expense.user}}</p>
+        <p class="lead ">Expense Amount: RS{{expense.amount}}</p>
+        <p class="lead ">Expense Category{{expense.category}}</p>
+        <p class="lead ">Expense added on {{expense.date}}</p>
+        <a class="btn btn-outline-light" href="/expense_home">Back to Expenses</a>
+    </div>
+    <div class="product-device shadow-sm d-none d-md-block"></div>
+    <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+</div>
+<div class="card container-fluid">
+    <div class="card-body">
+        <h5 class="card-title">Expense Description</h5>
+        <p class="card-text">{{expense.description}}</p>
+        <a class="btn btn-outline-dark" href="/expense/edit/{{expense.slug}}">Edit Expense</a>
+        <a class="btn btn-outline-dark" href="/expense/delete/{{expense.slug}}">Delete Expense</a>
+    </div>
+</div>
+{% endblock body %}
